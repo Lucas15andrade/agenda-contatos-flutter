@@ -29,7 +29,7 @@ class ContactHelper {
 
   Future<Database> initDb() async {
     final String databsesPath = await getDatabasesPath();
-    final String path = join(databsesPath, "contacs.fb");
+    final String path = join(databsesPath, "contacs.db");
 
     return openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {
@@ -99,6 +99,8 @@ class Contact {
   String email;
   String phone;
   String image;
+
+  Contact();
 
   Contact.fromMap(Map map) {
     id = map[idColumn];
