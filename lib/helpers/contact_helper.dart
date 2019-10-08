@@ -1,6 +1,5 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:async/async.dart';
+import 'package:sqflite/sqflite.dart';
 
 final String contactTable = "contactTable";
 final String idColumn = "idColumn";
@@ -28,13 +27,13 @@ class ContactHelper {
   }
 
   Future<Database> initDb() async {
-    final String databsesPath = await getDatabasesPath();
-    final String path = join(databsesPath, "contacs.db");
+    final String databasesPath = await getDatabasesPath();
+    final String path = join(databasesPath, "contacts.db");
 
     return openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {
       await db.execute(
-          "CREATE TABLE $contactTable($idColumn INTEGER PRYMARY KEY, $nameColumn TEXT, $emailColumn TEXT, "
+          "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT, "
           "$phoneColumn TEXT, $imageColumn TEXT)");
     });
   }
@@ -49,7 +48,7 @@ class ContactHelper {
     Database dbContact = await db;
     List<Map> maps = await dbContact.query(contactTable,
         columns: [idColumn, nameColumn, emailColumn, phoneColumn, imageColumn],
-        where: "$idColumn =  ?",
+        where: "$idColumn = ?",
         whereArgs: [id]);
     if (maps.length > 0) {
       return Contact.fromMap(maps.first);
@@ -58,9 +57,15 @@ class ContactHelper {
     }
   }
 
-  Future<int> deleteContact(int id) async {
+  /*Future<int> deleteContact(int id) async {
     Database dbContact = await db;
     return await dbContact
+        .delete(contactTable, where: "$idColumn = ?", whereArgs: [id]);
+  }*/
+
+  Future<int> deleteContact(int id) async {
+    Database database = await db;
+    return await database
         .delete(contactTable, where: "$idColumn = ?", whereArgs: [id]);
   }
 
